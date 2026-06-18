@@ -37,6 +37,13 @@ import { PrefStorage } from "./pref_storage.js";
 import { makeScreenshot } from "./screenshot.js";
 import { DarkTheme } from "./dark_theme.js";
 import { ThemeColors } from "./theme_colors.js";
+import {
+  applyTranslations,
+  getLanguage,
+  initI18n,
+  setLanguage,
+  t,
+} from "./i18n.js";
 
 // TODO: this is a hack, once we move to web fix this
 globalThis.userSettings = null;
@@ -61,9 +68,7 @@ function BlackboxLogViewer() {
   }
 
   if (!supportsRequiredAPIs()) {
-    alert(
-      "Your browser does not support the APIs required for reading log files."
-    );
+    alert(t("error.unsupportedBrowser"));
   }
 
   let GRAPH_STATE_PAUSED = 0,
@@ -145,6 +150,40 @@ function BlackboxLogViewer() {
     graphZoom = GRAPH_DEFAULT_ZOOM,
     lastGraphZoom = GRAPH_DEFAULT_ZOOM, // QuickZoom function.
     mapGrapher = new MapGrapher();
+
+  function refreshLocalizedUI() {
+    applyTranslations(document);
+    $('[data-toggle="tooltip"]').tooltip("fixTitle");
+    $(".language-select").val(getLanguage());
+    $("#viewer-version").text(t("version.current", { version: __APP_VERSION__ }));
+
+    if (hasLog) {
+      for (const graphConfigItem of activeGraphConfig.getGraphs()) {
+        for (const field of graphConfigItem.fields || []) {
+          field.friendlyName = fieldPresenter.fieldNameToFriendly(
+            field.name,
+            flightLog.getSysConfig().debug_mode
+          );
+        }
+      }
+      updateValuesChart();
+    }
+
+    if (graph) {
+      invalidateGraph();
+    }
+  }
+
+  function setupLanguageSwitcher() {
+    const languageSelect = $(".language-select");
+
+    languageSelect.val(getLanguage());
+    languageSelect.on("change", function () {
+      setLanguage($(this).val());
+    });
+
+    document.addEventListener("i18n:languageChanged", refreshLocalizedUI);
+  }
 
   // TODO: Figure out if we can open the same file in a new window
   function createNewBlackboxWindow(fileToOpen) {
@@ -793,7 +832,7 @@ function BlackboxLogViewer() {
   }
 
   function loadFileMessage(fileName) {
-    $("#loading-file-text").text(`Trying to load file ${fileName}...`);
+    $("#loading-file-text").text(t("loading.file", { fileName }));
     $("#loading-file-text").show();
   }
 
@@ -927,9 +966,7 @@ function BlackboxLogViewer() {
     }
 
     if (!URL.createObjectURL) {
-      alert(
-        "Sorry, your web browser doesn't support showing videos from your local computer."
-      );
+      alert(t("error.localVideoUnsupported"));
       currentOffsetCache.video = null; // clear the associated video name
       return;
     }
@@ -951,7 +988,7 @@ function BlackboxLogViewer() {
   }
 
   function reportVideoError(e) {
-    let errorMessage = "Error while loading the video.";
+    let errorMessage = t("error.videoLoad");
     if (e.currentTarget.error.code) {
       errorMessage += ` ERROR (${e.currentTarget.error.code}): ${e.currentTarget.error.message}`;
     }
@@ -1112,12 +1149,12 @@ function BlackboxLogViewer() {
       const data = e.target.result;
       let tmp = JSON.parse(data);
       if (tmp.graphConfig) {
-        globalThis.alert("Old Workspace format. Upgrading...");
+        globalThis.alert(t("workspace.upgrading"));
         tmp = upgradeWorkspaceFormat(tmp);
       }
       workspaceGraphConfigs = tmp;
       onSwitchWorkspace(workspaceGraphConfigs, 1);
-      globalThis.alert("Workspaces Loaded");
+      globalThis.alert(t("workspace.loaded"));
     };
 
     reader.readAsText(file);
@@ -1238,7 +1275,11 @@ function BlackboxLogViewer() {
     invalidateGraph();
   });
 
-  $(function () {
+  $(async function () {
+    await initI18n(prefs);
+    setupLanguageSwitcher();
+    applyTranslations(document);
+
     // Initialize dark theme
     DarkTheme.init(prefs);
 
@@ -1252,7 +1293,7 @@ function BlackboxLogViewer() {
     });
 
     // Get Latest Version Information
-    $("#viewer-version").text(`You are using version ${__APP_VERSION__}`);
+    $("#viewer-version").text(t("version.current", { version: __APP_VERSION__ }));
     $(".viewer-version", statusBar).text(`v${__APP_VERSION__}`);
     try {
       $.getJSON(
@@ -1796,7 +1837,7 @@ function BlackboxLogViewer() {
 
         // Video export is only supported in Chromium based browsers
         if (!isChromium()) {
-          alert("Video export is only supported in Chromium based browsers.");
+          alert(t("error.chromiumVideoExport"));
           return;
         }
 

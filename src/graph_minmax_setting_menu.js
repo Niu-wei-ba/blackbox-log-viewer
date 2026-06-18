@@ -1,4 +1,5 @@
 import { GraphConfig } from "./graph_config";
+import { applyTranslations } from "./i18n.js";
 // Show context menu to setup min-max values
 export function showMinMaxSetupContextMenu(
   menu_pos_x,
@@ -996,6 +997,7 @@ export function showMinMaxSetupContextMenu(
   enablePointerEvents(main_menu);
   enablePointerEvents(sub_menu);
   addKeyboardEvents();
+  applyTranslations(selected_curve.parents(".config-graph")[0]);
   showMenu(main_menu);
 }
 

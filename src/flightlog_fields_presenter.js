@@ -7,6 +7,7 @@ import {
   FFT_CALC_STEPS,
 } from "./flightlog_fielddefs";
 import { formatTime } from "./tools";
+import { translateFieldLabel, translateText } from "./i18n.js";
 
 export function FlightLogFieldPresenter() {
   // this is intentional
@@ -1564,7 +1565,7 @@ FlightLogFieldPresenter.presentEnum = function presentEnum(value, enumNames) {
     return value;
   }
 
-  return enumNames[value];
+  return translateText(enumNames[value]);
 };
 
 /**
@@ -2380,14 +2381,14 @@ FlightLogFieldPresenter.fieldNameToFriendly = function (fieldName, debugMode) {
         debugFields = DEBUG_FRIENDLY_FIELD_NAMES[DEBUG_MODE[0]];
       }
 
-      return debugFields[fieldName] ?? fieldName;
+      return translateFieldLabel(debugFields[fieldName] ?? fieldName);
     }
   }
   if (FRIENDLY_FIELD_NAMES[fieldName]) {
-    return FRIENDLY_FIELD_NAMES[fieldName];
+    return translateFieldLabel(FRIENDLY_FIELD_NAMES[fieldName]);
   }
 
-  return fieldName;
+  return translateFieldLabel(fieldName);
 };
 
 /**

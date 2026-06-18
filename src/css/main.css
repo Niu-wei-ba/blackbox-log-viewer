@@ -1329,6 +1329,40 @@ progress {
   padding: 15px;
 }
 
+.welcome-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  margin: 10px 0 22px;
+  text-align: left;
+}
+
+.welcome-brand-logo {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.welcome-brand h1 {
+  margin: 0;
+  line-height: 1.15;
+}
+
+@media (max-width: 768px) {
+  .welcome-brand {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .welcome-brand-logo {
+    width: 76px;
+    height: 76px;
+  }
+}
+
 .hiddenElement {
   display: none;
 }

@@ -3,6 +3,7 @@ import { FlightLogFieldPresenter } from "./flightlog_fields_presenter";
 import { showMinMaxSetupContextMenu } from "./graph_minmax_setting_menu";
 import { closeMinMaxContextMenu } from "./graph_minmax_setting_menu";
 import { isMinMaxContextMenuActive } from "./graph_minmax_setting_menu";
+import { applyTranslations, t, translateText } from "./i18n.js";
 
 export function GraphConfigurationDialog(dialog, onSave) {
   let // Some fields it doesn't make sense to graph
@@ -26,7 +27,7 @@ export function GraphConfigurationDialog(dialog, onSave) {
     const selectColor = $('<select class="color-picker"></select>');
     for (let i = 0; i < GraphConfig.PALETTE.length; i++) {
       let option = $("<option></option>")
-        .text(GraphConfig.PALETTE[i].name)
+        .text(translateText(GraphConfig.PALETTE[i].name))
         .attr("value", GraphConfig.PALETTE[i].color)
         .css("color", GraphConfig.PALETTE[i].color);
       if (currentSelection == GraphConfig.PALETTE[i].color) {
@@ -169,7 +170,7 @@ export function GraphConfigurationDialog(dialog, onSave) {
   function renderField(flightLog, field, color) {
     const elem = $(
         '<tr class="config-graph-field">' +
-          '<td><select class="form-control"><option value="">(choose a field)</option></select></td>' +
+          `<td><select class="form-control"><option value="">${t("graph.chooseField")}</option></select></td>` +
           '<td><input name="smoothing" class="form-control" type="text"/></td>' +
           '<td><input name="power" class="form-control" type="text"/></td>' +
           '<td><input name="linewidth" class="form-control" type="text"/></td>' +
@@ -290,27 +291,27 @@ export function GraphConfigurationDialog(dialog, onSave) {
         `<li class="config-graph" id="${index}">` +
           `<dl>` +
           `<dt><span>` +
-          `<h4 style="display:inline-block;vertical-align: baseline;"><span class="glyphicon glyphicon-minus"></span>Graph ` +
+          `<h4 style="display:inline-block;vertical-align: baseline;"><span class="glyphicon glyphicon-minus"></span>${t("graph.graph")} ` +
           `<span class="graph-index-number">${index + 1}</span>` +
           `</h4>` +
-          `<button type="button" class="btn btn-default btn-sm pull-right remove-single-graph-button" style="display:inline-block;vertical-align: baseline;"><span class="glyphicon glyphicon-trash"></span> Remove graph ` +
+          `<button type="button" class="btn btn-default btn-sm pull-right remove-single-graph-button" style="display:inline-block;vertical-align: baseline;"><span class="glyphicon glyphicon-trash"></span> ${t("graph.removeGraph")} ` +
           `</button>` +
           `</span></dt>` +
           `<dd>` +
           `<div class="form-horizontal">` +
           `<div class="form-group">` +
-          `<label class="col-sm-2 control-label">Axis label</label>` +
+          `<label class="col-sm-2 control-label">${t("graph.axisLabel")}</label>` +
           `<div class="col-sm-10">` +
           `<ul class="config-graph-header form-inline list-unstyled">` +
           `<li class="config-graph-header">` +
-          `<input class="form-control" type="text" placeholder="Axis label" style="width:92%;">` +
+          `<input class="form-control" type="text" placeholder="${t("graph.axisLabel")}" style="width:92%;">` +
           `<select class="form-control graph-height"></select>` +
           `</li>` +
           `</ul>` +
           `</div>` +
           `</div>` +
           `<div class="flexDiv">` +
-          `<label class="control-label">Fields:</label>` +
+          `<label class="control-label">${t("graph.fields")}</label>` +
           `<div class="selectWrapper">` +
           `<div class="dropdown-content main_menu"></div>` +
           `<div class="dropdown-content sub_menu"></div>` +
@@ -322,19 +323,19 @@ export function GraphConfigurationDialog(dialog, onSave) {
           `<table class="config-graph-field-list">` +
           `<thead>` +
           `<tr name="field-header">` +
-          `<th name="field">Name</th>` +
-          `<th name="smoothing">Smooth</th>` +
-          `<th name="expo">Expo</th>` +
-          `<th name="line">Line</th>` +
-          `<th name="color">Color</th>` +
-          `<th name="MinValue">Minimum</th>` +
-          `<th name="MaxValue">Maximum</th>` +
+          `<th name="field">${t("graph.name")}</th>` +
+          `<th name="smoothing">${t("graph.smooth")}</th>` +
+          `<th name="expo">${t("graph.expo")}</th>` +
+          `<th name="line">${t("graph.line")}</th>` +
+          `<th name="color">${t("graph.color")}</th>` +
+          `<th name="MinValue">${t("graph.minimum")}</th>` +
+          `<th name="MaxValue">${t("graph.maximum")}</th>` +
           `</tr>` +
           `</thead>` +
           `<tbody>` +
           `</tbody>` +
           `</table>` +
-          `<button type="button" class="btn btn-default btn-sm add-field-button"><span class="glyphicon glyphicon-plus"></span> Add field</button>` +
+          `<button type="button" class="btn btn-default btn-sm add-field-button"><span class="glyphicon glyphicon-plus"></span> ${t("graph.addField")}</button>` +
           `</div>` +
           `</div>` +
           `</div>` +
@@ -431,7 +432,7 @@ export function GraphConfigurationDialog(dialog, onSave) {
     for (let i = 0; i < exampleGraphs.length; i++) {
       const li = $('<li><a href="#"></a></li>');
 
-      $("a", li).text(exampleGraphs[i].label).data("graphIndex", i);
+      $("a", li).text(translateText(exampleGraphs[i].label)).data("graphIndex", i);
 
       menu.append(li);
 
@@ -546,6 +547,7 @@ export function GraphConfigurationDialog(dialog, onSave) {
 
     populateExampleGraphs(flightLog, exampleGraphsMenu);
     renderGraphs(flightLog, config);
+    applyTranslations(dialog[0]);
     prevCfg = convertUIToGraphConfig();
     cfgMustBeRestored = false;
   };

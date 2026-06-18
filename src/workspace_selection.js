@@ -1,3 +1,5 @@
+import { t } from "./i18n.js";
+
 const UNTITLED = "Untitled";
 
 export function WorkspaceSelection(
@@ -23,7 +25,7 @@ export function WorkspaceSelection(
     let caretElem = $('<span class="caret"></span>');
 
     editButton = $(
-      '<span class="glyphicon glyphicon-pencil workspace-selector-editButton" aria-hidden="true" data-toggle="tooltip" title="Edit Workspace Name"></span>'
+      `<span class="glyphicon glyphicon-pencil workspace-selector-editButton" aria-hidden="true" data-toggle="tooltip" title="${t("workspace.editName")}"></span>`
     );
     editButton.click(editTitle);
     editButton.tooltip({ trigger: "hover", placement: "auto bottom" });
@@ -79,7 +81,7 @@ export function WorkspaceSelection(
       let title = $('<span class="workspace-selector-title">');
 
       if (!element) {
-        title.text("<empty>");
+        title.text(t("workspace.empty"));
         title.addClass("faded");
       } else {
         title.text(element.title);
@@ -96,7 +98,7 @@ export function WorkspaceSelection(
       let actionButtons = $('<span class="pull-right"></span>');
 
       let saveButton = $(
-        '<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true" data-toggle="tooltip" title="Save current graph setup to this Workspace"></span>'
+        `<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true" data-toggle="tooltip" title="${t("workspace.saveHere")}"></span>`
       );
       saveButton.click((e) => {
         if (!element) {

@@ -1,4 +1,5 @@
 import { FlightLogFieldPresenter } from "./flightlog_fields_presenter";
+import { applyTranslations, t } from "./i18n.js";
 
 export function UserSettingsDialog(dialog, onLoad, onSave) {
   // Private Variables
@@ -388,12 +389,10 @@ export function UserSettingsDialog(dialog, onLoad, onSave) {
         `<tr>` +
           `<td colspan="2">` +
           `<p class="error">` +
-          `Error, you have selected a craft type that required more motors than are available in the log; ` +
-          `There are only a maximum of ${
-            availableMotors.length
-          } motors in the log file; the selection you have chosen requires ${
-            mixerList[mixerConfiguration - 1].defaultMotorOrder.length
-          } motors.` +
+          t("settings.notEnoughMotors", {
+            available: availableMotors.length,
+            required: mixerList[mixerConfiguration - 1].defaultMotorOrder.length,
+          }) +
           `</p>` +
           `</td>` +
           `</tr>`
@@ -407,9 +406,9 @@ export function UserSettingsDialog(dialog, onLoad, onSave) {
       ) {
         var motors_e = $(
           `<tr>` +
-            `<td colspan="2"><label>Motor ${
-              i + 1
-            }</label><select class="motor_${i}_"><!-- list generated here --></select></td>` +
+            `<td colspan="2"><label>${t("settings.motor", {
+              number: i + 1,
+            })}</label><select class="motor_${i}_"><!-- list generated here --></select></td>` +
             `</tr>`
         );
         let select_e = $("select", motors_e);
@@ -747,6 +746,7 @@ export function UserSettingsDialog(dialog, onLoad, onSave) {
       $(".verticalBar").prop("checked", currentSettings.drawVerticalBar);
     }
 
+    applyTranslations(dialog[0]);
     dialog.modal("show");
   };
 }

@@ -1,4 +1,5 @@
 import { FlightLogVideoRenderer } from "./flightlog_video_renderer.js";
+import { applyTranslations, t } from "./i18n.js";
 
 export function VideoExportDialog(dialog, onSave) {
   let DIALOG_MODE_SETTINGS = 0,
@@ -64,14 +65,14 @@ export function VideoExportDialog(dialog, onSave) {
     $(".video-export-dialog-cancel").toggle(mode != DIALOG_MODE_COMPLETE);
     $(".video-export-dialog-close").toggle(mode == DIALOG_MODE_COMPLETE);
 
-    let title = "Export video";
+    let title = t("videoExport.title");
 
     switch (mode) {
       case DIALOG_MODE_IN_PROGRESS:
-        title = "Rendering video...";
+        title = t("videoExport.rendering");
         break;
       case DIALOG_MODE_COMPLETE:
-        title = "Video rendering complete!";
+        title = t("videoExport.complete");
         break;
     }
 
@@ -131,6 +132,7 @@ export function VideoExportDialog(dialog, onSave) {
 
     $(".jumpy-video-note").toggle(!!logParameters.flightVideo);
 
+    applyTranslations(dialog[0]);
     dialog.modal("show");
 
     this.flightLog = flightLog;
@@ -211,9 +213,12 @@ export function VideoExportDialog(dialog, onSave) {
         onComplete: function (success, frameCount) {
           if (success) {
             $(".video-export-result").text(
-              `Rendered ${frameCount} frames in ${formatTime(
-                Math.round((Date.now() - renderStartTime) / 1000)
-              )}`
+              t("videoExport.result", {
+                frameCount,
+                duration: formatTime(
+                  Math.round((Date.now() - renderStartTime) / 1000)
+                ),
+              })
             );
             setDialogMode(DIALOG_MODE_COMPLETE);
           } else {
@@ -230,7 +235,7 @@ export function VideoExportDialog(dialog, onSave) {
     progressBar.prop("value", 0);
     progressRenderedFrames.text("");
     progressRemaining.text("");
-    progressSize.text("Calculating...");
+    progressSize.text(t("videoExport.calculating"));
     fileSizeWarning.hide();
 
     setDialogMode(DIALOG_MODE_IN_PROGRESS);

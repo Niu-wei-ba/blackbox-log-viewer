@@ -24,6 +24,7 @@ import {
   THROTTLE_LIMIT_TYPE,
   DEBUG_MODE,
 } from "./flightlog_fielddefs";
+import { applyTranslations, translateText } from "./i18n.js";
 
 export function HeaderDialog(dialog, onSave) {
   // Private Variables
@@ -1229,7 +1230,7 @@ export function HeaderDialog(dialog, onSave) {
           }" bit="${i}" /></td><td><label for="feature-${i}">${
             features[i].name
           }</label></td><td><span>${
-            features[i].description
+            translateText(features[i].description)
           }</span>${feature_tip_html}</td></tr>`
         );
         radioGroups.push(features[i].group);
@@ -1242,7 +1243,7 @@ export function HeaderDialog(dialog, onSave) {
           }" type="checkbox" bit="${i}" /><div><div></div></div></label></td><td><label for="feature-${i}">${
             features[i].name
           }</label></td><td><span>${
-            features[i].description
+            translateText(features[i].description)
           }</span>${feature_tip_html}</td></tr>`
         );
 
@@ -1331,8 +1332,8 @@ export function HeaderDialog(dialog, onSave) {
         fields[i].name
       }
                           " type="checkbox" /><div><div></div></div></label></td><td><label for="field-
-                          ${i}">${fields[i].name}</label></td><td><span>
-                          ${fields[i].description}</span></td></tr>`);
+                          ${i}">${translateText(fields[i].name)}</label></td><td><span>
+                          ${translateText(fields[i].description)}</span></td></tr>`);
 
       const field_e = row_e.find("input.field");
 
@@ -2136,6 +2137,7 @@ export function HeaderDialog(dialog, onSave) {
 
     dialog.one("show.bs.modal", function () {
       renderSysConfig(sysConfig);
+      applyTranslations(dialog[0]);
       // Disable changing input and dropdowns
       $("#dlgHeaderDialog input").prop("disabled", "disabled");
       $("#dlgHeaderDialog select").prop("disabled", "disabled");
