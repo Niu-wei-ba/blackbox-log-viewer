@@ -1,0 +1,8 @@
+services:
+  blackbox-log-viewer:
+    build: .
+    image: hs-fpv/blackbox-log-viewer:2025.12-maintenance
+    container_name: blackbox_log_viewer
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3200:80"
