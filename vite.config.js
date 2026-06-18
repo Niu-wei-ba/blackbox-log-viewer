@@ -8,7 +8,9 @@ export default {
     },
     plugins: [
         VitePWA({
+            injectRegister: false,
             registerType: 'autoUpdate',
+            selfDestroying: true,
             workbox: {
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,json,mcm,woff2}'],
                 // 5MB

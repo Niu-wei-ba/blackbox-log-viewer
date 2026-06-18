@@ -44,6 +44,9 @@ import {
   setLanguage,
   t,
 } from "./i18n.js";
+import { cleanupServiceWorker } from "./service_worker_cleanup.js";
+
+cleanupServiceWorker();
 
 // TODO: this is a hack, once we move to web fix this
 globalThis.userSettings = null;
