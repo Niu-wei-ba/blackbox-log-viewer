@@ -2,8 +2,7 @@ FROM node:24 AS build
 
 WORKDIR /app
 
-RUN npm install -g yarn@1.22.22 \
-    && git config --global url."https://github.com/".insteadOf ssh://git@github.com/ \
+RUN git config --global url."https://github.com/".insteadOf ssh://git@github.com/ \
     && git config --global url."https://github.com/".insteadOf git@github.com:
 
 COPY package.json yarn.lock ./
